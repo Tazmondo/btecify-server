@@ -6,6 +6,8 @@ name = "pypi"
 [packages]
 flask = "*"
 psycopg2-binary = "*"
+flask-restful = "*"
+waitress = "*"
 
 [dev-packages]
 

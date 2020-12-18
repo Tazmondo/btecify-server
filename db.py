@@ -5,6 +5,7 @@ DATABASEDIRECTORY = pathlib.Path("database")
 DATABASEINDEX = DATABASEDIRECTORY / ".index"
 
 databases = {}
+# TODO: Heroku integration
 
 
 class Database:

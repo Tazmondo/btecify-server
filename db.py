@@ -2,6 +2,7 @@ import pathlib
 import pickle
 
 DATABASEDIRECTORY = pathlib.Path("database")
+DATABASEINDEX = DATABASEDIRECTORY / ".index"
 
 databases = {}
 
@@ -36,15 +37,11 @@ class Database:
     def updaterow(self, rowname: str, data: dict):
         """Update a row with a new value by its key.
 
-        Raises a ValueError if the data is not a dict.
-
         :param rowname: Row of the database to update. Will be created if doesn't already exist.
         :param data: The data to update the row with.
         """
-        if type(data) != dict:
-            raise ValueError("Data type provided was not a dict.")
-
         self.database[rowname] = data
+        self._updatefile()
 
     def delrow(self, rowname: str):
         """Delete a row of the database.
@@ -57,6 +54,7 @@ class Database:
             del self.database[rowname]
         else:
             raise ValueError(f"Row does not exist with name: {rowname}")
+        self._updatefile()
 
     def getname(self) -> str:
         """Returns the name of the database."""
@@ -72,32 +70,45 @@ def _updateindex():
     for db in databases:
         strtowrite += db + "\n"
 
+    with open(DATABASEINDEX, "w") as f:
+        f.write(strtowrite)
 
-def createdb(dbname: str):
+
+def createdb(dbname: str) -> Database:
     """
     Create a new database and add it to the index.
 
     Raises a KeyError if database already exists.
 
     :param dbname: Name of the database.
+    :return: Database created.
     """
-    if db in databases:
+    if dbname in databases:
         raise KeyError(f"Database already exists with name: {dbname}")
-    newdb = Database(db)
-    databases[db] = newdb
+    newdb = Database(dbname)
+    databases[dbname] = newdb
     _updateindex()
+
+    return newdb
 
 
 def deletedb(dbname: str):
-    if db not in databases:
+    if dbname not in databases:
         raise KeyError(f"Database does not exist with name: {dbname}")
-    del databases[db]
+    del databases[dbname]
     _updateindex()
 
 
-with open(DATABASEDIRECTORY / ".index", "r") as f:
-    dbtobeparsed = f.read().strip().split("\n")
+if not DATABASEINDEX.exists():
+    with open(DATABASEINDEX, "w") as f:
+        pass
+
+with open(DATABASEINDEX, "r") as f:
+    dbtobeparsed = f.read().splitlines()
 
 for db in dbtobeparsed:
-    createdb(db)
+    databases[db] = createdb(db)
 
+if __name__ == "__main__":
+    db = databases['test']
+    print(db.database['Taz'])

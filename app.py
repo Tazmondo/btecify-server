@@ -27,7 +27,7 @@ class LoginResource(Resource):
             return "Please provide valid JSON arguments. username and password.", 400
 
         if y['username'] not in userdb:
-            return "Invalid username.", 400
+            return "Invalid username.", 422
 
         user = userdb.getrow(y['username'])
         if not user.validate(y['password']):

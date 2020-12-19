@@ -64,7 +64,7 @@ class Playlist:
 
 
 class User:
-    def __init__(self, name, password, apikey, playlists: list[Playlist] = ()):
+    def __init__(self, name, hashedpw, apikey, playlists: list[Playlist] = ()):
         self.is_authenticated = True
         self.is_active = True
         self.is_anonymous = False
@@ -74,7 +74,7 @@ class User:
             if type(playlists[0]) is dict:
                 playlists = list(map(lambda a: Playlist.playlistfromjson(a), playlists))
         self.playlists: list[Playlist] = list(playlists)
-        self.hashpw = password
+        self.hashpw = hashedpw
 
     def get_id(self):
         return self._name
@@ -253,15 +253,15 @@ if __name__ == "__main__":
     pass
     testsong = Song("testname", "google.com", "durat23ion", "aut231hor")
     testplaylists = [Playlist("testplaylist", [testsong]), Playlist("testplaylist2", [testsong])]
-    newuser = User("Taz", sha256.hash("password"), "testkey")
+    newuser = User("Test", sha256.hash("password"), "testkey")
 
     try:
-        userdb.createrow("Taz", newuser)
+        userdb.createrow("Test", newuser)
     except Exception:
-        userdb.updaterow("Taz", newuser)
+        userdb.updaterow("Test", newuser)
 
 
-    with AccessRow(userdb, "Taz") as data:
+    with AccessRow(userdb, "Test") as data:
         data.setplaylists(testplaylists)
 
 

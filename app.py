@@ -50,17 +50,18 @@ class PlaylistResource(Resource):
     def post(self):
         json = request.get_json()
         playlistlist = [Playlist.playlistfromjson(playlist) for playlist in json]
-        with AccessRow(userdb, current_user.name()) as data:
+        with AccessRow(userdb, current_user.getname()) as data:
             data.setplaylists(playlistlist)
 
 
 @app.route('/')
 def hello_world():
-    r = make_response("btecify on top")
+    r = make_response("btecify on top!😤😤😤😤😤")
     return r
 
 
 @app.route('/testauth')
+@login_required
 def testauth():
     return "You are authorised!", 200
 

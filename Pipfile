@@ -8,6 +8,10 @@ flask = "*"
 psycopg2-binary = "*"
 flask-restful = "*"
 waitress = "*"
+flask-user = "*"
+passlib = "*"
+pafy = "*"
+flask-login = "*"
 
 [dev-packages]
 
